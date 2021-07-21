@@ -30,8 +30,8 @@ namespace tipi {
 	 * 
 	 */
 	struct vault {
-		vault(const std::string& vault_encrypted_buffer, const std::string& password) :
-			vault_encrypted_buffer(vault_encrypted_buffer),
+		vault(const std::string& encrypted_buffer, const std::string& password) :
+			encrypted_buffer_(encrypted_buffer),
 			password_(password)
 		{}
 
@@ -41,23 +41,45 @@ namespace tipi {
 			return { {.auth_info= gh::auth{"booom", "bar"}} };
 		}
 
-		std::string vault_encrypted_buffer;
+		std::string get_encrypted_buffer() const {
+			return encrypted_buffer_;
+		}
+
+		void set_encrypted_buffer(const std::string& encrypted_buffer) {
+			encrypted_buffer_ = encrypted_buffer;
+		}
 
 		//! Changes the password and reencrypts the vault accordingly.
 		void password(const std::string& new_password) { 
-			auto plain_vault = detail::decrypt_vault(password_, vault_encrypted_buffer);
+			auto plain_vault = detail::decrypt_vault(password_, encrypted_buffer_);
 
 			password_ = new_password;
 
-			vault_encrypted_buffer = detail::encrypt_vault(password_, plain_vault);
+			encrypted_buffer_ = detail::encrypt_vault(password_, plain_vault);
 		}
 
 		std::string password() const { return password_; }
 
 		private: 
+		std::string encrypted_buffer_;
 		std::string password_;
 	};
 
 
 
+}
+
+#include <emscripten/bind.h>
+#include <emscripten/val.h> 
+
+namespace {
+	using namespace emscripten;
+	EMSCRIPTEN_BINDINGS(tipi_vault) {
+	  class_<tipi::vault>("tipi_vault")
+	    .constructor<std::string, std::string>()
+	    .function("auths", &tipi::vault::auths)
+	    .property("encrypted_buffer", &tipi::vault::get_encrypted_buffer, &tipi::vault::set_encrypted_buffer)
+	    //.property("password", &tipi::vault::password, &tipi::vault::password)
+	    ;
+}
 }
