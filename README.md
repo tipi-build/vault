@@ -2,12 +2,12 @@
 
 To build and run the test : 
 ```sh
-nxxm . -t wasm-cxx17 --test=all -v
+nxxm . -t asmjs-cxx17 --test=all -v
 ```
 
-Try in a browser (Chrome to prefer because of SharedArrayBuffer at the moment): 
+Try in a browser 
 ```sh
 nxxm run npm install --global http-server && nxxm run http-server .
 ```
 
-And click on : [ http://127.0.0.1:8080/build/wasm-cxx17/bin/ ]( http://127.0.0.1:8080/build/wasm-cxx17/bin/ )
+And go on : [ http://127.0.0.1:8080/build/asmjs-cxx17/bin/ ]( http://127.0.0.1:8080/build/asmjs-cxx17/bin/ )

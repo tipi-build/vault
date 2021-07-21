@@ -1,4 +1,5 @@
-#set (CMAKE_STATIC_LIBRARY_SUFFIX ".js")
-set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --bind -s NO_EXIT_RUNTIME=1  --whole-archive ")
-set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --bind -s NO_EXIT_RUNTIME=1 --whole-archive ")
-add_definitions(-g4) # Generates emscripten C++ sourcemaps
+#set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s USE_PTHREADS=0 -s WASM=0 ")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_PTHREADS=0 ")
+##set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --bind -s NO_EXIT_RUNTIME=1  -s USE_PTHREADS=0 -s WASM=0 --whole-archive --no-check-features --no-shared-memory")
+##set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --bind -s NO_EXIT_RUNTIME=1 -s USE_PTHREADS=0 -s WASM=0 --whole-archive --no-check-features --no-shared-memory")
+#add_definitions(-g4) # Generates emscripten C++ sourcemaps
