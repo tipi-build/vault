@@ -72,7 +72,6 @@ namespace tipi {
 #include <emscripten/bind.h>
 #include <emscripten/val.h> 
 
-namespace {
 	using namespace emscripten;
 	EMSCRIPTEN_BINDINGS(tipi_vault) {
 	  class_<tipi::vault>("tipi_vault")
@@ -81,5 +80,4 @@ namespace {
 	    .property("encrypted_buffer", &tipi::vault::get_encrypted_buffer, &tipi::vault::set_encrypted_buffer)
 	    //.property("password", &tipi::vault::password, &tipi::vault::password)
 	    ;
-}
 }
