@@ -46,14 +46,11 @@ namespace tipi {
 		void add_auth(const std::string& user, const std::string& password/*, 
 			const std::optional<std::string>& endpoint = std::nullopt*/ ) {
 			//TODO: decrypt_vault(vault_key)
-			std::cout << "Adding : " << user << " , " << password << std::endl;
 			auto auths = pre::json::from_json<auths_t>(encrypted_buffer_);
-			std::cout << "auths deserialized : " << auths.size() << std::endl;
 			auths.push_back(auth_t{ gh::auth{user, password}, std::nullopt });
-			std::cout << "auths size : " << auths.size() << std::endl;
 			std::cout << pre::json::to_json(auths) << std::endl;
 			//TODO: encrypt_vault(vault_key)
-			encrypted_buffer_ = pre::json::to_json(auths);
+			encrypted_buffer_ = pre::json::to_json(auths).dump();
 		}
 
 		auths_t auths() const {
