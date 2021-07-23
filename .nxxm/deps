@@ -1,5 +1,5 @@
 {
 
-	"nxxm/gh" : {}
-
+	"nxxm/gh" : {},
+	"platform": [{ "packages" : ["cryptopp"], "targets" : ["cryptopp-static"] }] 
 }

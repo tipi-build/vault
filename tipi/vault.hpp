@@ -5,6 +5,7 @@
 #include <map>
 #include <pre/json/from_json.hpp>
 #include <pre/json/to_json.hpp>
+#include <xxhr/util.hpp> // for base64
 #include <boost/fusion/include/equal_to.hpp>
 
 #include <emscripten/bind.h>
@@ -69,7 +70,7 @@ namespace tipi {
 			std::generate(access_key.begin(), access_key.end() - 1, prng);
 			std::cout << "Generated Access Key: " << access_key  << std::endl;
 			//TODO: encrypt(passphrase, access_key);
-			encrypted_buffer_ = access_key;
+			encrypted_buffer_ = xxhr::util::encode64(access_key);
 		}
 
 		std::string get_encrypted_buffer() const { return encrypted_buffer_; }
@@ -112,7 +113,7 @@ namespace tipi {
 		//! Creates a new empty vault with the given vault key.
 		vault(const vault_access_key& vault_key) :
 			vault_key_(vault_key),
-			encrypted_buffer_("[]")
+			encrypted_buffer_(xxhr::util::encode64("[]"))
 		{}
 
 		//! Loads a vault with the given key from the provided encrypted_buffer.
@@ -124,28 +125,28 @@ namespace tipi {
 		void add(const auth_t& auth) {
 			std::cout << "vault, using vault_key : " << vault_key_.get();
 			//TODO: decrypt_vault(vault_key)
-			auto auths = pre::json::from_json<auths_t>(encrypted_buffer_);
+			auto auths = pre::json::from_json<auths_t>(xxhr::util::decode64(encrypted_buffer_));
 			auths.push_back(auth);
 			std::cout << pre::json::to_json(auths) << std::endl;
 			//TODO: encrypt_vault(vault_key)
-			encrypted_buffer_ = pre::json::to_json(auths).dump();
+			encrypted_buffer_ = xxhr::util::encode64(pre::json::to_json(auths).dump());
 		}
 
 		void remove(const auth_t& auth) {
 			//TODO: decrypt_vault(vault_key)
-			auto auths = pre::json::from_json<auths_t>(encrypted_buffer_);
+			auto auths = pre::json::from_json<auths_t>(xxhr::util::decode64(encrypted_buffer_));
 
 			auto found = std::find(auths.begin(), auths.end(), auth);
 			if (found != auths.end()) { auths.erase(found); }
 
 			std::cout << "remove: " <<  pre::json::to_json(auths) << std::endl;
-			encrypted_buffer_ = pre::json::to_json(auths).dump();
+			encrypted_buffer_ = xxhr::util::encode64(pre::json::to_json(auths).dump());
 
 		}
 
 		auths_t auths() const {
 			//TODO: decrypt_vault(vault_key)
-			auto auths = pre::json::from_json<auths_t>(encrypted_buffer_);
+			auto auths = pre::json::from_json<auths_t>(xxhr::util::decode64(encrypted_buffer_));
 			return auths;
 		}
 
