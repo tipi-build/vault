@@ -45,7 +45,7 @@ namespace tipi {
    * \brief the vault is made up of multiple indirections this represents a passphrase  encrypted random generated access_key 
    */ 
   struct vault_access_key {
-    static constexpr std::size_t ACCESS_KEY_SIZE=64; 
+    static constexpr std::size_t ACCESS_KEY_SIZE=64;
 
     //! Generates a new random vault access key with hardware random dev
     vault_access_key(const std::string& passphrase) 
@@ -69,8 +69,7 @@ namespace tipi {
       std::string access_key(ACCESS_KEY_SIZE, char{});
       std::generate(access_key.begin(), access_key.end() - 1, prng);
       std::cout << "Generated Access Key: " << access_key  << std::endl;
-      //TODO: encrypt(passphrase, access_key);
-      encrypted_buffer_ = xxhr::util::encode64(access_key);
+      encrypted_buffer_ = xxhr::util::encode64(detail::encrypt(passphrase_, access_key));
     }
 
     std::string get_encrypted_buffer() const { return encrypted_buffer_; }
@@ -80,11 +79,10 @@ namespace tipi {
     std::string encrypted_buffer_;
 
     private: 
-    //! get the decrypted access key (needed by the vault
+    //! get the decrypted access key (needed by the vault to actually read it's content)
     std::string get() const {
-      //TODO: decrypt(passphrase)
-      auto decrypted_buffer = encrypted_buffer_;
-      return decrypted_buffer;
+      auto decrypted_access_key = xxhr::util::decode64(detail::decrypt(passphrase_, encrypted_buffer_));
+      return decrypted_access_key;
     }
 
     friend class vault;
@@ -97,7 +95,7 @@ namespace tipi {
         .constructor<std::string>()
         .constructor<std::string, std::string>()
         .function("regenerate", &vault_access_key::regenerate)
-        .property("encrypted_buffer", &vault_access_key::get_encrypted_buffer, &tipi::vault_access_key::set_encrypted_buffer)
+        .property("encrypted_buffer", &vault_access_key::get_encrypted_buffer, &vault_access_key::set_encrypted_buffer)
         ;
 
     }
@@ -111,61 +109,60 @@ namespace tipi {
     public:
 
     //! Creates a new empty vault with the given vault key.
-    vault(const vault_access_key& vault_key) :
-      vault_key_(vault_key),
-      encrypted_buffer_(xxhr::util::encode64("[]"))
-    {}
+    vault(const vault_access_key& access_key) :
+      access_key_(access_key)
+    {
+      auths_t auths{};
+      set_auths(auths);
+    }
 
     //! Loads a vault with the given key from the provided encrypted_buffer.
-    vault(const vault_access_key& vault_key, const std::string& encrypted_buffer) :
-      vault_key_(vault_key),
+    vault(const vault_access_key& access_key, const std::string& encrypted_buffer) :
+      access_key_(access_key),
       encrypted_buffer_(encrypted_buffer)
     {}
 
     void add(const auth_t& auth) {
-      std::cout << "vault, using vault_key : " << vault_key_.get();
-      //TODO: decrypt_vault(vault_key)
-      auto auths = pre::json::from_json<auths_t>(xxhr::util::decode64(encrypted_buffer_));
+      auto auths = get_auths();
       auths.push_back(auth);
       std::cout << pre::json::to_json(auths) << std::endl;
-      //TODO: encrypt_vault(vault_key)
-      encrypted_buffer_ = xxhr::util::encode64(pre::json::to_json(auths).dump());
+      set_auths(auths);
     }
 
     void remove(const auth_t& auth) {
-      //TODO: decrypt_vault(vault_key)
-      auto auths = pre::json::from_json<auths_t>(xxhr::util::decode64(encrypted_buffer_));
+      auto auths = get_auths();
 
       auto found = std::find(auths.begin(), auths.end(), auth);
       if (found != auths.end()) { auths.erase(found); }
 
       std::cout << "remove: " <<  pre::json::to_json(auths) << std::endl;
-      encrypted_buffer_ = xxhr::util::encode64(pre::json::to_json(auths).dump());
 
+      set_auths(auths);
     }
 
-    auths_t auths() const {
-      //TODO: decrypt_vault(vault_key)
-      auto auths = pre::json::from_json<auths_t>(xxhr::util::decode64(encrypted_buffer_));
-      return auths;
+    auths_t get_auths() const {
+      return pre::json::from_json<auths_t>(detail::decrypt(access_key_.get(), encrypted_buffer_));
+    }
+
+    void set_auths(const auths_t& auths) {
+      encrypted_buffer_ = detail::encrypt(access_key_.get(), pre::json::to_json(auths).dump());
     }
 
     std::string get_encrypted_buffer() const { return encrypted_buffer_; }
     void set_encrypted_buffer(const std::string& encrypted_buffer) { encrypted_buffer_ = encrypted_buffer; }
 
-    //! Changes the vault_key and reencrypts the vault accordingly.
-    //void vault_key(const std::string& new_vault_key) { 
-    //	auto plain_vault = detail::decrypt_vault(vault_key_, encrypted_buffer_);
+    //! Changes the vault_access_key and reencrypts the vault accordingly.
+    void access_key(const vault_access_key& new_vault_access_key) { 
+      auto auths = get_auths();
+      access_key_ = new_vault_access_key;
+      set_auths(auths);
+    }
 
-    //	vault_key_ = new_vault_key;
-
-    //	encrypted_buffer_ = detail::encrypt_vault(vault_key_, plain_vault);
-    //}
-
-    //std::string vault_key() const { return vault_key_; }
+    vault_access_key access_key() const { return access_key_; }
 
     private: 
-    const vault_access_key& vault_key_;
+
+    vault_access_key access_key_;
     std::string encrypted_buffer_;
   };
 
@@ -175,9 +172,9 @@ namespace tipi {
       class_<vault>("tipi_vault")
         .constructor<const vault_access_key&>()
         .constructor<const vault_access_key&, std::string>()
-        .function("auths", &vault::auths)
         .function("add", &vault::add)
         .function("remove", &vault::remove)
+        .property("auths", &vault::get_auths, &vault::set_auths)
         .property("encrypted_buffer", &vault::get_encrypted_buffer, &vault::set_encrypted_buffer)
         ;
     }

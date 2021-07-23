@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
 		tipi::vault_access_key{user_input_password}
 	};
 
-	for (tipi::auth_t& auth : v.auths()) {
+	for (tipi::auth_t& auth : v.get_auths()) {
 		std::cout << "Authentication data for " << auth.user << ", password : " << auth.pass << std::endl;
 
 		std::cout << " for Github Enterprise at : " << auth.endpoint
