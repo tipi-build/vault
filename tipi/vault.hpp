@@ -68,17 +68,20 @@ namespace tipi {
     std::string get_encrypted_buffer() const { return encrypted_buffer_; }
     void set_encrypted_buffer(const std::string& encrypted_buffer) { encrypted_buffer_ = encrypted_buffer; }
 
-    std::string passphrase_;
-    std::string encrypted_buffer_;
-
-    private: 
     //! get the decrypted access key (needed by the vault to actually read it's content)
     std::string get() const {
       auto decrypted_access_key = detail::decrypt(passphrase_, encrypted_buffer_);
       return decrypted_access_key;
     }
 
-    friend class vault;
+    //! set the decrypted access key from an external plain text value
+    void set(const std::string& plain_access_key) const {
+      = detail::encrypt(passphrase_, plain_access_key);
+
+    }
+
+    std::string passphrase_;
+    std::string encrypted_buffer_;
   };
 
 

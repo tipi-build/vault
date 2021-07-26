@@ -26,6 +26,7 @@
         .constructor<std::string, std::string>()
         .function("regenerate", &vault_access_key::regenerate)
         .property("encrypted_buffer", &vault_access_key::get_encrypted_buffer, &vault_access_key::set_encrypted_buffer)
+        .property("get", &vault_access_key::get, &vault_access_key::set )
         ;
 
       class_<vault>("tipi_vault")
