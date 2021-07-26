@@ -6,10 +6,20 @@
 #endif
 
 #ifdef __EMSCRIPTEN__
+
+
+
   namespace tipi {
     namespace {
     using namespace emscripten;
+
+    std::string get_exception_message(intptr_t exceptionPtr) {
+      return std::string(reinterpret_cast<std::exception *>(exceptionPtr)->what());
+    }
+
     EMSCRIPTEN_BINDINGS(vault_bindings) {
+      emscripten::function("get_exception_message", &get_exception_message);
+
       enum_<endpoint_t>("endpoint_t")
           .value("GITHUB", endpoint_t::GITHUB)
       ;
