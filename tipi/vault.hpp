@@ -27,7 +27,7 @@ namespace tipi {
     //! Personal access token or OAUTH token
     std::string pass;
     std::string endpoint;
-    endpoint_t type;
+    endpoint_t type{};
   };
   using boost::fusion::operator==;
 
@@ -37,22 +37,22 @@ namespace tipi {
   namespace {
     using namespace emscripten;
     EMSCRIPTEN_BINDINGS(auth_t) {
+      enum_<endpoint_t>("endpoint_t")
+          .value("GITHUB", endpoint_t::GITHUB)
+      ;
+
       value_object<tipi::auth_t>("auth_t")
         .field("user", &tipi::auth_t::user)
         .field("pass", &tipi::auth_t::pass)
         .field("endpoint", &tipi::auth_t::endpoint)
         .field("type", &tipi::auth_t::type)
         ;
-
-      enum_<endpoint_t>("endpoint_t")
-          .value("GITHUB", endpoint_t::GITHUB)
-      ;
     }	
   }
 #endif
 }
 
-BOOST_FUSION_ADAPT_STRUCT(tipi::auth_t, user, pass, endpoint);
+BOOST_FUSION_ADAPT_STRUCT(tipi::auth_t, user, pass, endpoint, type);
 
 namespace tipi {
   /**
@@ -83,7 +83,7 @@ namespace tipi {
       std::string access_key(ACCESS_KEY_SIZE, char{});
       std::generate(access_key.begin(), access_key.end() - 1, prng);
       std::cout << "Generated Access Key: " << access_key  << std::endl;
-      encrypted_buffer_ = xxhr::util::encode64(detail::encrypt(passphrase_, access_key));
+      encrypted_buffer_ = detail::encrypt(passphrase_, access_key);
     }
 
     std::string get_encrypted_buffer() const { return encrypted_buffer_; }
@@ -95,7 +95,7 @@ namespace tipi {
     private: 
     //! get the decrypted access key (needed by the vault to actually read it's content)
     std::string get() const {
-      auto decrypted_access_key = xxhr::util::decode64(detail::decrypt(passphrase_, encrypted_buffer_));
+      auto decrypted_access_key = detail::decrypt(passphrase_, encrypted_buffer_);
       return decrypted_access_key;
     }
 
@@ -157,11 +157,13 @@ namespace tipi {
     }
 
     auths_t get_auths() const {
+      std::cout << "get_auths" << std::endl;
       return pre::json::from_json<auths_t>(detail::decrypt(access_key_.get(), encrypted_buffer_));
     }
 
     void set_auths(const auths_t& auths) {
-      encrypted_buffer_ = detail::encrypt(access_key_.get(), pre::json::to_json(auths).dump());
+      encrypted_buffer_ = detail::encrypt(access_key_.get(), pre::json::to_json(auths).dump() );
+      std::cout << "set_auths : " << encrypted_buffer_ << std::endl;
     }
 
     std::string get_encrypted_buffer() const { return encrypted_buffer_; }

@@ -1,5 +1,6 @@
 {
 
-	"nxxm/gh" : {},
+	"cpp-pre/json" : { "@" : "feature/user-vault-cpp"},
+	"nxxm/xxhr" : {},
 	"platform": [{ "packages" : ["cryptopp"], "targets" : ["cryptopp-static"] }] 
 }

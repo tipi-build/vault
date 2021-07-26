@@ -6,7 +6,7 @@
 #include <cryptopp/default.h>
 #include <cryptopp/filters.h>
 #include <cryptopp/files.h>
-#include <cryptopp/hex.h>
+#include <cryptopp/base64.h>
 
 namespace tipi::detail {
 
@@ -15,18 +15,26 @@ namespace tipi::detail {
 	using CryptoPP::StringSource;
 	using CryptoPP::StringSink;
 	using CryptoPP::FileSource;
-	using CryptoPP::HexEncoder;
-	using CryptoPP::HexDecoder;
+	using CryptoPP::Base64Decoder;
+	using CryptoPP::Base64Encoder;
 
 	using CryptoPP::AES;
 	using CryptoPP::SHA256;
 	using CryptoPP::HMAC;
 	using CryptoPP::DataParametersInfo;
 	using CryptoPP::DataEncryptorWithMAC;
+	using CryptoPP::DataDecryptorWithMAC;
 
 	const size_t SALT_SIZE = 8;
 	const size_t ITERATIONS = 2500;
 	using DataEncryptorTipiVault = DataEncryptorWithMAC <
+		AES,SHA256,
+		HMAC<SHA256>,
+		DataParametersInfo<
+			AES::BLOCKSIZE, AES::DEFAULT_KEYLENGTH, HMAC<SHA256>::DIGESTSIZE, SALT_SIZE, ITERATIONS 
+		>>;
+
+	using DataDecryptorTipiVault = DataDecryptorWithMAC <
 		AES,SHA256,
 		HMAC<SHA256>,
 		DataParametersInfo<
@@ -39,19 +47,21 @@ namespace tipi::detail {
    	StringSource ss(plain_buffer, true,
 			new DataEncryptorTipiVault(
 					reinterpret_cast<const uint8_t*>(password.data()), password.size(),
-					new StringSink(encrypted)
+					new Base64Encoder(new StringSink(encrypted))
 				)
 		); 
+
 		return encrypted;
 	} 
 
 	inline std::string decrypt(const std::string& password, const std::string& encrypted_buffer) {
 		std::string plain_buffer;
-
 		StringSource ss(encrypted_buffer, true,
-				new DataEncryptorTipiVault(
-					reinterpret_cast<const uint8_t*>(password.data()), password.size(),
-					new StringSink(plain_buffer)
+				new Base64Decoder(
+					new DataDecryptorTipiVault(
+						reinterpret_cast<const uint8_t*>(password.data()), password.size(),
+						new StringSink(plain_buffer)
+					)
 				)
 		);		
 
