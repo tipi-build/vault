@@ -7,7 +7,7 @@
 #include <iostream>
 
 BOOST_AUTO_TEST_CASE(simple_use) {
-
+  
 	auto user_input_password = "mysecret";
 	tipi::vault_access_key the_black_keys {user_input_password};
 	tipi::vault v {
@@ -33,7 +33,6 @@ BOOST_AUTO_TEST_CASE(simple_use) {
 
 	std::string buffer = v.get_encrypted_buffer();
 
-  BOOST_CHECK_THROW( (tipi::vault_access_key{"yoursecret", the_black_keys.get_encrypted_buffer()}), std::exception );
   BOOST_CHECK_THROW((
     tipi::vault {
         tipi::vault_access_key{user_input_password, "bluuuurrp"},

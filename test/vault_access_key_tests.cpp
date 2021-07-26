@@ -4,10 +4,11 @@
 #include "wasm_boost_test.hpp"
 
 #include <tipi/vault.hpp>
+//#include <boost/random/random_device.hpp>
 
 BOOST_AUTO_TEST_CASE(vault_access_key_gen) {
-  std::random_device r;
-  BOOST_CHECK(r.entropy() != 0);
+  //std::random_device r;
+  //BOOST_CHECK(r.entropy() != 0);
   
   tipi::vault_access_key key("protected-by-this-passphrase");
   BOOST_REQUIRE(key.get_raw_key().size() == tipi::vault_access_key::ACCESS_KEY_SIZE); 
@@ -43,7 +44,8 @@ BOOST_AUTO_TEST_CASE(load_from_buffer) {
 
   // test to deser with wrong pass
   {
-    BOOST_CHECK_THROW( (tipi::vault_access_key { "protegeParCePass", encrypted_buffer }), std::exception);
+    tipi::vault_access_key key_wrong_passphrase{ "protegeParCePass", encrypted_buffer };
+    BOOST_CHECK_THROW( key_wrong_passphrase.get_raw_key(), std::exception);
   }
 
 }
