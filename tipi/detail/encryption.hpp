@@ -48,21 +48,25 @@ using DataDecryptorTipiVault = DataDecryptorWithMAC <
 	 	StringSource ss(plain_buffer, true,
 			new DataEncryptorTipiVault(
 					reinterpret_cast<const uint8_t*>(password.data()), password.size(),
-					new StringSink(encrypted)
+          new Base64Encoder(
+            new StringSink(encrypted),
+            false /* no newline */
+          )
 				)
 		); 
 
-		return xxhr::util::encode64(encrypted);
+		return encrypted;
 	} 
 
 	inline std::string decrypt(const std::string& password, const std::string& encrypted_buffer) {
 		std::string plain_buffer;
-		auto base64decoded = xxhr::util::decode64(encrypted_buffer);
-		StringSource ss(base64decoded, true,
+		StringSource ss(encrypted_buffer, true,
+        new Base64Decoder(
 					new DataDecryptorTipiVault(
 						reinterpret_cast<const uint8_t*>(password.data()), password.size(),
 						new StringSink(plain_buffer)
 					)
+        )
 		);		
 
 		return plain_buffer;
