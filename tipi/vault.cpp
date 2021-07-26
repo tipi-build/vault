@@ -20,6 +20,7 @@
         .field("endpoint", &tipi::auth_t::endpoint)
         .field("type", &tipi::auth_t::type)
         ;
+      register_vector<tipi::auth_t>("vector_auth_t");
 
       class_<vault_access_key>("vault_access_key")
         .constructor<std::string>()
