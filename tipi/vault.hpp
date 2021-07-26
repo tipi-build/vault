@@ -8,24 +8,32 @@
 #include <xxhr/util.hpp> // for base64
 #include <boost/fusion/include/equal_to.hpp>
 
-#include <emscripten/bind.h>
-#include <emscripten/val.h> 
+#ifdef __EMSCRIPTEN__
+  #include <emscripten/bind.h>
+  #include <emscripten/val.h> 
+#endif
 
 
 #include <tipi/detail/vault_impl.hpp>
 
 namespace tipi {
 
+  enum class endpoint_t {
+    GITHUB
+  };
+
   struct auth_t {
     std::string user;
     //! Personal access token or OAUTH token
     std::string pass;
     std::string endpoint;
+    endpoint_t type;
   };
   using boost::fusion::operator==;
 
   using auths_t = std::vector<auth_t>;
 
+#ifdef __EMSCRIPTEN__
   namespace {
     using namespace emscripten;
     EMSCRIPTEN_BINDINGS(auth_t) {
@@ -33,9 +41,15 @@ namespace tipi {
         .field("user", &tipi::auth_t::user)
         .field("pass", &tipi::auth_t::pass)
         .field("endpoint", &tipi::auth_t::endpoint)
+        .field("type", &tipi::auth_t::type)
         ;
-    }			
+
+      enum_<endpoint_t>("endpoint_t")
+          .value("GITHUB", endpoint_t::GITHUB)
+      ;
+    }	
   }
+#endif
 }
 
 BOOST_FUSION_ADAPT_STRUCT(tipi::auth_t, user, pass, endpoint);
@@ -88,6 +102,7 @@ namespace tipi {
     friend class vault;
   };
 
+#ifdef __EMSCRIPTEN__
   namespace {
     using namespace emscripten;
     EMSCRIPTEN_BINDINGS(vault_access_key) {
@@ -100,6 +115,7 @@ namespace tipi {
 
     }
   }
+#endif
 
   /**
    * \brief vault to store access tokens and passwords to the different 
@@ -166,6 +182,7 @@ namespace tipi {
     std::string encrypted_buffer_;
   };
 
+#ifdef __EMSCRIPTEN__
   namespace {
     using namespace emscripten;
     EMSCRIPTEN_BINDINGS(tipi_vault) {
@@ -179,4 +196,5 @@ namespace tipi {
         ;
     }
   }
+#endif
 }

@@ -33,14 +33,13 @@ namespace tipi::detail {
 			AES::BLOCKSIZE, AES::DEFAULT_KEYLENGTH, HMAC<SHA256>::DIGESTSIZE, SALT_SIZE, ITERATIONS 
 		>>;
 
+
 	inline std::string encrypt(const std::string& password, const std::string& plain_buffer) {
 		std::string encrypted;
    	StringSource ss(plain_buffer, true,
 			new DataEncryptorTipiVault(
 					reinterpret_cast<const uint8_t*>(password.data()), password.size(),
-					new HexEncoder(
-						new StringSink(encrypted)
-					)
+					new StringSink(encrypted)
 				)
 		); 
 		return encrypted;
@@ -50,12 +49,10 @@ namespace tipi::detail {
 		std::string plain_buffer;
 
 		StringSource ss(encrypted_buffer, true,
-			new HexDecoder(
 				new DataEncryptorTipiVault(
 					reinterpret_cast<const uint8_t*>(password.data()), password.size(),
 					new StringSink(plain_buffer)
 				)
-			)
 		);		
 
 		return plain_buffer;
