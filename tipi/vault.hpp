@@ -62,24 +62,38 @@ namespace tipi {
       std::string access_key(ACCESS_KEY_SIZE, char{});
       std::generate(access_key.begin(), access_key.end() - 1, prng);
       std::cout << "Generated Access Key: " << access_key  << std::endl;
-      encrypted_buffer_ = detail::encrypt(passphrase_, access_key);
+      set_raw_key(access_key);
     }
 
-    std::string get_encrypted_buffer() const { return encrypted_buffer_; }
-    void set_encrypted_buffer(const std::string& encrypted_buffer) { encrypted_buffer_ = encrypted_buffer; }
+
+    //! \return your most precious secret
+    std::string get_passphrase() const {
+      return passphrase_;
+    }
+
+    //! \brief reencode the access key storage with a new passphrase
+    void set_passphrase(const std::string& new_passphrase) {
+      auto decrypted_access_key = get_raw_key();
+      passphrase_ = new_passphrase;
+      set_raw_key(decrypted_access_key);
+    } 
 
     //! \brief get the decrypted access key (needed by the vault to actually read it's content)
-    std::string get() const {
+    std::string get_raw_key() const {
       auto decrypted_access_key = detail::decrypt(passphrase_, encrypted_buffer_);
       return decrypted_access_key;
     }
 
     //! \brief set the decrypted access key from an external plain text value
-    void set(const std::string& plain_access_key) {
+    void set_raw_key(const std::string& plain_access_key) {
       encrypted_buffer_ = detail::encrypt(passphrase_, plain_access_key);
-
     }
 
+    //! \return base64 encoded encrypted buffer
+    std::string get_encrypted_buffer() const { return encrypted_buffer_; }
+    void set_encrypted_buffer(const std::string& encrypted_buffer) { encrypted_buffer_ = encrypted_buffer; }
+
+    private:
     std::string passphrase_;
     std::string encrypted_buffer_;
   };

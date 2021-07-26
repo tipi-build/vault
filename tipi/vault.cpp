@@ -26,7 +26,8 @@
         .constructor<std::string, std::string>()
         .function("regenerate", &vault_access_key::regenerate)
         .property("encrypted_buffer", &vault_access_key::get_encrypted_buffer, &vault_access_key::set_encrypted_buffer)
-        .property("get", &vault_access_key::get, &vault_access_key::set )
+        .property("passphrase", &vault_access_key::get_passphrase, &vault_access_key::set_passphrase)
+        .property("raw_key", &vault_access_key::get_raw_key,  &vault_access_key::set_raw_key)
         ;
 
       class_<vault>("tipi_vault")
@@ -77,11 +78,11 @@ namespace tipi {
 
   auths_t vault::get_auths() const {
     std::cout << "get_auths" << std::endl;
-    return pre::json::from_json<auths_t>(detail::decrypt(access_key_.get(), encrypted_buffer_));
+    return pre::json::from_json<auths_t>(detail::decrypt(access_key_.get_raw_key(), encrypted_buffer_));
   }
 
   void vault::set_auths(const auths_t& auths) {
-    encrypted_buffer_ = detail::encrypt(access_key_.get(), pre::json::to_json(auths).dump() );
+    encrypted_buffer_ = detail::encrypt(access_key_.get_raw_key(), pre::json::to_json(auths).dump() );
     std::cout << "set_auths : " << encrypted_buffer_ << std::endl;
   }
 
