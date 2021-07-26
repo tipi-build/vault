@@ -49,3 +49,21 @@ BOOST_AUTO_TEST_CASE(load_from_buffer) {
   }
 
 }
+
+
+BOOST_AUTO_TEST_CASE(set_raw_key) {
+
+  tipi::vault_access_key key("mypassphrase");
+  for (size_t i=0; i < 1000; ++i) {
+    std::cout << "Playing with a new rawkey" << std::endl;
+    auto rawkey = key.get_raw_key();
+    const std::string encrypted_buffer = key.get_encrypted_buffer();
+
+    const auto new_rawkey = std::string("bananasplit!plus--") + std::to_string(i);
+    std::cout << "new_rawkey size: " << new_rawkey.size() << " : " << new_rawkey << std::endl;
+    key.set_raw_key(new_rawkey);
+    BOOST_REQUIRE(key.get_encrypted_buffer() != encrypted_buffer);
+    BOOST_REQUIRE(key.get_raw_key() == new_rawkey);
+  }
+
+}
