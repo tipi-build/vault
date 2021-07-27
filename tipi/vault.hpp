@@ -61,8 +61,9 @@ namespace tipi {
       std::mt19937 prng(seed);
       std::string access_key(ACCESS_KEY_SIZE, char{});
       std::generate(access_key.begin(), access_key.end() - 1, prng);
-      std::cout << "Generated Access Key: " << access_key  << std::endl;
-      set_raw_key(access_key);
+      auto random_key = xxhr::util::encode64(access_key);
+      std::cout << "Generated Access Key: " << random_key  << std::endl;
+      set_raw_key(random_key);
     }
 
 
