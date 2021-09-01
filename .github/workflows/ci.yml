@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
       - name: tipi builds project
         run: |
-          tipi . --dont-upgrade --verbose
+          tipi . --dont-upgrade --verbose -t wasm-asmjs-cxx17 --test all
 
   build-linux:
     name: build-linux
