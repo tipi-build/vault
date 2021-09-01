@@ -1,6 +1,6 @@
 {
 
 	"cpp-pre/json" : { "@" : "feature/user-vault-cpp"},
-	"nxxm/xxhr" : { "@" : "feature/fix-decoding-nullptr-ending-buffer" },
+	"nxxm/xxhr" : {},
 	"platform": [{ "packages" : ["cryptopp"], "targets" : ["cryptopp-static"] }] 
 }

@@ -14,7 +14,8 @@
 namespace tipi {
 
   enum class endpoint_t {
-    GITHUB
+    GITHUB,
+    TIPI_STORAGE
   };
 
   struct auth_t {
@@ -56,13 +57,11 @@ namespace tipi {
     //! regenerate the access key
     void regenerate() {
       std::random_device r;
-      std::cout << "Generating with entropy : " << r.entropy() << std::endl;
       std::seed_seq seed{r(), r(), r(), r(), r(), r(), r(), r()}; 
       std::mt19937 prng(seed);
       std::string access_key(ACCESS_KEY_SIZE, char{});
       std::generate(access_key.begin(), access_key.end() - 1, prng);
       auto random_key = xxhr::util::encode64(access_key);
-      std::cout << "Generated Access Key: " << random_key  << std::endl;
       set_raw_key(random_key);
     }
 
