@@ -6,22 +6,22 @@ jobs:
   build-wasm:
     name: build-wasm
     runs-on: ubuntu-latest
-    container: nxxm/tipi-ubuntu-develop
+    container: tipibuild/tipi-ubuntu-develop
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - name: nxxm builds project
+      - name: tipi builds project
         run: |
-          tipi . --dont-upgrade --verbose
+          tipi . --dont-upgrade --verbose -t wasm-asmjs-cxx17 --test all
 
   build-linux:
     name: build-linux
     runs-on: ubuntu-latest
-    container: nxxm/tipi-ubuntu-develop
+    container: tipibuild/tipi-ubuntu-develop
 
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - name: nxxm builds project
+      - name: tipi builds project
         run: |
           tipi . --dont-upgrade --verbose -t gcc-7-cxx17 --test all

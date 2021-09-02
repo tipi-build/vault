@@ -22,6 +22,7 @@
 
       enum_<endpoint_t>("endpoint_t")
           .value("GITHUB", endpoint_t::GITHUB)
+          .value("TIPI_STORAGE", endpoint_t::TIPI_STORAGE)
       ;
 
       value_object<tipi::auth_t>("auth_t")
