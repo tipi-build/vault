@@ -11,7 +11,8 @@ BOOST_AUTO_TEST_CASE(vault_access_key_gen) {
   //BOOST_CHECK(r.entropy() != 0);
   
   tipi::vault_access_key key("protected-by-this-passphrase");
-  BOOST_REQUIRE(key.get_raw_key().size() == tipi::vault_access_key::ACCESS_KEY_SIZE); 
+  const size_t size_when_base64_encoded = ((4 * tipi::vault_access_key::ACCESS_KEY_SIZE / 3) + 3) & ~3;
+  BOOST_REQUIRE(key.get_raw_key().size() == size_when_base64_encoded); 
 
   BOOST_REQUIRE(!key.get_encrypted_buffer().empty());
 }
