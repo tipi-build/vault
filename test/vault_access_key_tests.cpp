@@ -21,7 +21,6 @@ BOOST_AUTO_TEST_CASE(change_passphrase) {
   
   tipi::vault_access_key key("protected-by-this-passphrase");
   auto rawkey = key.get_raw_key();
-  std::cout << rawkey << std::endl;
   auto encrypted_buffer_before_passchange = key.get_encrypted_buffer();
   
   BOOST_REQUIRE(key.get_passphrase() == "protected-by-this-passphrase");

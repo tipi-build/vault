@@ -73,7 +73,6 @@ namespace tipi {
   void vault::add(const auth_t& auth) {
     auto auths = get_auths();
     auths.push_back(auth);
-    std::cout << pre::json::to_json(auths) << std::endl;
     set_auths(auths);
   }
 
@@ -82,20 +81,16 @@ namespace tipi {
 
     auto found = std::find(auths.begin(), auths.end(), auth);
     if (found != auths.end()) { auths.erase(found); }
-
-    std::cout << "remove: " <<  pre::json::to_json(auths) << std::endl;
-
     set_auths(auths);
   }
 
   auths_t vault::get_auths() const {
-    std::cout << "get_auths" << std::endl;
     return pre::json::from_json<auths_t>(detail::decrypt(access_key_.get_raw_key(), encrypted_buffer_));
   }
 
   void vault::set_auths(const auths_t& auths) {
     encrypted_buffer_ = detail::encrypt(access_key_.get_raw_key(), pre::json::to_json(auths).dump() );
-    std::cout << "set_auths : " << encrypted_buffer_ << std::endl;
+
   }
 
   std::string vault::get_encrypted_buffer() const { return encrypted_buffer_; }
