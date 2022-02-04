@@ -32,7 +32,7 @@ namespace tipi {
   struct auth_patch_t {
     std::string patch_hash;
     std::string parent_hash;
-    std::string encrypted_patch;
+    std::string patch;
   };
 
   struct vault_info_t {
@@ -51,7 +51,7 @@ namespace tipi {
 }
 
 BOOST_FUSION_ADAPT_STRUCT(tipi::auth_t, user, pass, endpoint, type);
-BOOST_FUSION_ADAPT_STRUCT(tipi::auth_patch_t, patch_hash, parent_hash, encrypted_patch);
+BOOST_FUSION_ADAPT_STRUCT(tipi::auth_patch_t, patch_hash, parent_hash, patch);
 BOOST_FUSION_ADAPT_STRUCT(tipi::vault_info_t, public_key, revision);
 BOOST_FUSION_ADAPT_STRUCT(tipi::access_key_info_t, revision);
 

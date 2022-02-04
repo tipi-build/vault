@@ -37,7 +37,7 @@
       value_object<tipi::auth_patch_t>("auth_patch_t")
         .field("patch_hash", &tipi::auth_patch_t::patch_hash)
         .field("parent_hash", &tipi::auth_patch_t::parent_hash)
-        .field("auth_entry", &tipi::auth_patch_t::encrypted_patch)
+        .field("patch", &tipi::auth_patch_t::patch)
         ;
 
       value_object<tipi::vault_info_t>("vault_info_t")
@@ -152,9 +152,20 @@ namespace tipi {
       return true;  // already applied - done.
     }
 
-    // decrypt and deserialize the patch
-    std::string patch_ct = detail::decrypt_ecies_message(patch.encrypted_patch, ppk_entry.pass);
-    auth_t patch_auth = pre::json::from_json<auth_t>(patch_ct);
+    
+
+    // decrypt and deserialize the outer crypto container
+    std::string patch_ct = detail::decrypt_ecies_message(patch.patch, ppk_entry.pass);
+    auth_patch_t inner_patch = pre::json::from_json<auth_patch_t>(patch_ct);       
+
+    if(inner_patch.parent_hash != patch.parent_hash 
+      || inner_patch.patch_hash != patch.patch_hash) {
+      
+      throw std::runtime_error("Patch integrity check failed / hashes do not match");
+    }
+
+    // now deserialize the actual patch/auth_t
+    auth_t patch_auth = pre::json::from_json<auth_t>(inner_patch.patch);
 
     // check if it can be applied & apply if so
     if(patch.parent_hash == vault_info.revision) {
@@ -238,13 +249,19 @@ namespace tipi {
 
   auth_patch_t vault::create_patch(const auth_t& auth) {
     vault_info_t info = get_info();
-    
+
     std::string patch_cleartext_json = pre::json::to_json(auth).dump();
     std::string patch_hash = sha1::to_string(sha1::hash(info.revision + patch_cleartext_json));
+    auth_patch_t inner_patch{};
+    inner_patch.parent_hash = info.revision;
+    inner_patch.patch_hash = patch_hash;
+    inner_patch.patch = patch_cleartext_json;
+
+    std::string patch_json = pre::json::to_json(inner_patch).dump();    
     auth_patch_t patch{};
     patch.parent_hash = info.revision;
     patch.patch_hash = patch_hash;
-    patch.encrypted_patch = detail::encrypt_ecies_message(patch_cleartext_json, info.public_key);
+    patch.patch = detail::encrypt_ecies_message(patch_json, info.public_key);
 
     return patch;
   }
