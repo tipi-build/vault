@@ -231,7 +231,7 @@ using Vault_v1_DataDecryptorWithMAC = DataDecryptorWithMAC <
 
 	inline ecies_keypair generate_ecies_keypair() {
 		CryptoPP::AutoSeededRandomPool prng;
-		ECIES<ECP>::Decryptor decryptor(prng, CryptoPP::ASN1::secp256r1()); // curve25519()
+		ECIES<ECP>::Decryptor decryptor(prng, CryptoPP::ASN1::secp256r1());
 		ECIES<ECP>::Encryptor encryptor(decryptor);
 		
 		std::string private_key, public_key;
@@ -251,28 +251,30 @@ using Vault_v1_DataDecryptorWithMAC = DataDecryptorWithMAC <
 	inline std::string decrypt_ecies_message(const std::string &cyphertext_hex, const std::string &private_key_hex) {
 		CryptoPP::AutoSeededRandomPool prng;
 
-		std::cout << "cyphertext: " << cyphertext_hex << std::endl;
-
 		ECIES<ECP>::Decryptor decryptor(prng, CryptoPP::ASN1::secp256r1());
 
 		CryptoPP::StringSource priv_key_source(private_key_hex, true, new CryptoPP::HexDecoder());		
 		decryptor.AccessPrivateKey().Load(priv_key_source);
 		decryptor.AccessPrivateKey().ThrowIfInvalid(prng, 3);
-		std::cout << "loaded private key" << std::endl;
 
 		std::string cyphertext_plain;		
 		CryptoPP::StringSource ss(cyphertext_hex, true,
-			new CryptoPP::HexDecoder(
+			new CryptoPP::Base64Decoder(
 				new CryptoPP::StringSink(cyphertext_plain)
-			) // HexDecoder
-		); // StringSource
-
-		std::cout << "cyphertext plain: " << cyphertext_plain << std::endl;
+			)
+		);
 
 		std::string cleartext; // decrypted message
-    	CryptoPP::StringSource s (cyphertext_plain, true, new CryptoPP::PK_DecryptorFilter(prng, decryptor, new CryptoPP::StringSink(cleartext) ) );
+    	CryptoPP::StringSource s (
+			cyphertext_plain, 
+			true, /* pump all */
+			new CryptoPP::PK_DecryptorFilter(
+				prng, 
+				decryptor, 
+				new CryptoPP::StringSink(cleartext) 
+			) 
+		);
 
-		std::cout  << "cyphertext plain: " << cleartext << std::endl;
 		return cleartext;
 	}
 
@@ -289,8 +291,18 @@ using Vault_v1_DataDecryptorWithMAC = DataDecryptorWithMAC <
 		encryptor.AccessPublicKey().ThrowIfInvalid(prng, 3);
 
 		std::string encrypted_buffer; // encrypted message
-    	CryptoPP::StringSource s (cleartext, true, new CryptoPP::PK_EncryptorFilter(prng, encryptor, new CryptoPP::HexEncoder(new CryptoPP::StringSink(encrypted_buffer) ) ) );
-		std::cout << "ency:" << encrypted_buffer << std::endl;
+    	CryptoPP::StringSource s (
+			cleartext, 
+			true, /* pump all */
+			new CryptoPP::PK_EncryptorFilter(
+				prng, 
+				encryptor, 
+				new CryptoPP::Base64Encoder(
+					new CryptoPP::StringSink(encrypted_buffer), 
+					false /* no newline */
+				) 
+			) 
+		);
 
 		return encrypted_buffer;
 	}

@@ -241,17 +241,10 @@ namespace tipi {
     
     std::string patch_cleartext_json = pre::json::to_json(auth).dump();
     std::string patch_hash = sha1::to_string(sha1::hash(info.revision + patch_cleartext_json));
-    std::cout << patch_cleartext_json << std::endl;
-    std::cout << patch_hash << std::endl;
-    std::cout << info.public_key << std::endl;
-    std::cout << info.revision << std::endl;
-
     auth_patch_t patch{};
     patch.parent_hash = info.revision;
     patch.patch_hash = patch_hash;
     patch.encrypted_patch = detail::encrypt_ecies_message(patch_cleartext_json, info.public_key);
-
-    std::cout << patch.encrypted_patch << std::endl;
 
     return patch;
   }
