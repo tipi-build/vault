@@ -6,5 +6,12 @@
     , "u" : true
 	  , "packages" : ["cryptopp"] 
     , "targets" : ["cryptopp-static"] 
-  } 
+  }
+  , "tipi-deps/boost" : {
+      "@" : "v1.80.0-without-submodules"
+    , "u" : true
+    , "packages" : ["boost_system", "boost_fusion"]
+    , "targets" : ["Boost::system", "Boost::fusion" ]
+  }
+
 }
