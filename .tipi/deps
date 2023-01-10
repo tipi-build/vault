@@ -1,6 +1,10 @@
 {
 
-	"cpp-pre/json" : { "@" : "feature/user-vault-cpp"},
-	"nxxm/xxhr" : {},
-	"platform": [{ "packages" : ["cryptopp"], "targets" : ["cryptopp-static"] }] 
+  "cpp-pre/json" : { "@" : "feature/move-to-native-tipi-deps" }
+  , "nxxm/xxhr" : { "@" : "feature/move-to-native-tipi-deps" }
+  , "hunter-packages/cryptopp" : { "@" : "v8.2.0-p0" 
+    , "u" : true
+	  , "packages" : ["cryptopp"] 
+    , "targets" : ["cryptopp-static"] 
+  } 
 }
