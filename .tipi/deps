@@ -3,6 +3,7 @@
   , "nxxm/xxhr" : { "@" : "feature/move-to-native-tipi-deps" }
   , "hunter-packages/cryptopp" : { "@" : "v8.2.0-p0" 
     , "u" : true
+    , "opts" : "set (BUILD_SHARED OFF)"
 	  , "packages" : ["cryptopp"] 
     , "targets" : ["cryptopp-static"] 
   }
