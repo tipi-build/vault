@@ -1,6 +1,17 @@
 {
+  "cpp-pre/json" : { "@" : "feature/move-to-native-tipi-deps" }
+  , "nxxm/xxhr" : { "@" : "feature/move-to-native-tipi-deps" }
+  , "hunter-packages/cryptopp" : { "@" : "v8.2.0-p0" 
+    , "u" : true
+    , "opts" : "set (BUILD_SHARED OFF)"
+	  , "packages" : ["cryptopp"] 
+    , "targets" : ["cryptopp-static"] 
+  }
+  , "boostorg/boost" : { "@" : "boost-1.80.0",
+    "opts": "set(BOOST_INCLUDE_LIBRARIES system fusion)"
+    , "packages" : ["boost_system", "boost_fusion"]
+    , "targets" : ["Boost::system", "Boost::fusion" ]
+    , "u": true
+  } 
 
-	"cpp-pre/json" : { "@" : "feature/user-vault-cpp"},
-	"nxxm/xxhr" : {},
-	"platform": [{ "packages" : ["cryptopp"], "targets" : ["cryptopp-static"] }] 
 }
