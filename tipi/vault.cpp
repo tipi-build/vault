@@ -22,6 +22,8 @@
 
       enum_<endpoint_t>("endpoint_t")
           .value("GITHUB", endpoint_t::GITHUB)
+          .value("GITLAB", endpoint_t::GITLAB)
+          .value("GIT", endpoint_t::GIT)
           .value("TIPI_STORAGE", endpoint_t::TIPI_STORAGE)
       ;
 

@@ -14,6 +14,8 @@ namespace tipi {
 
   enum class endpoint_t {
     GITHUB,
+    GITLAB,
+    GIT,
     TIPI_STORAGE
   };
 
