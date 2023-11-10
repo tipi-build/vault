@@ -6,7 +6,7 @@ jobs:
   build-wasm:
     name: build-wasm
     runs-on: ubuntu-latest
-    container: tipibuild/tipi-ubuntu-develop
+    container: tipibuild/tipi-ubuntu:latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
   build-linux:
     name: build-linux
     runs-on: ubuntu-latest
-    container: tipibuild/tipi-ubuntu-develop
+    container: tipibuild/tipi-ubuntu:latest
 
     steps:
       - name: checkout
