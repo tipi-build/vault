@@ -1,17 +1,36 @@
 {
-  "cpp-pre/json" : { "@" : "feature/move-to-native-tipi-deps" }
-  , "nxxm/xxhr" : { "@" : "feature/move-to-native-tipi-deps" }
-  , "hunter-packages/cryptopp" : { "@" : "v8.2.0-p0" 
-    , "u" : true
-    , "opts" : "set (BUILD_SHARED OFF)"
-	  , "packages" : ["cryptopp"] 
-    , "targets" : ["cryptopp-static"] 
-  }
-  , "boostorg/boost" : { "@" : "boost-1.80.0",
-    "opts": "set(BOOST_INCLUDE_LIBRARIES system fusion)"
-    , "packages" : ["boost_system", "boost_fusion"]
-    , "targets" : ["Boost::system", "Boost::fusion" ]
-    , "u": true
-  } 
-
+    "boostorg/boost" : {
+        "@" : "boost-1.80.0"
+      , "u" : true
+      , "opts" : "set(BOOST_INCLUDE_LIBRARIES system;fusion;type_index;algorithm;test;xpressive;serialization CACHE STRING \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES context CACHE STRING \"\" FORCE) \n add_compile_options(-Wno-enum-constexpr-conversion)"
+      , "packages" : ["boost_system","boost_fusion", "boost_core"]
+      , "targets" : ["Boost::system","Boost::fusion", "Boost::core"]
+    },
+    "cpp-pre/json": {
+        "@": "feature/move-to-native-tipi-deps",
+        "requires": {
+            "nlohmann/json" :  { "@" : "v3.11.2", "x" :  [ "benchmarks", "/tests", "/docs", "/tools"] }
+            , "boostorg/boost" : {
+                "@" : "boost-1.80.0"
+              , "u" : true
+              , "opts" : "set(BOOST_INCLUDE_LIBRARIES system;fusion;type_index;algorithm;test;xpressive;serialization CACHE STRING \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES context CACHE STRING \"\" FORCE) \n add_compile_options(-Wno-enum-constexpr-conversion)"
+              , "packages" : ["boost_system","boost_fusion", "boost_core"]
+              , "targets" : ["Boost::system","Boost::fusion", "Boost::core"]
+              }
+          },
+        "u": false
+    },
+    "hunter-packages/cryptopp": {
+        "@": "v8.2.0-p0",
+        "opts" : "set (BUILD_SHARED OFF CACHE BOOL \"\" FORCE)" ,
+        "packages": [
+            "cryptopp"
+        ],
+        "targets": [
+            "cryptopp-static"
+        ],
+        "u": true
+    }
+    , "platform:wasm-cxx17" : ["target::embind"]
+    , "platform:wasm-asmjs-cxx17" : ["target::embind"]
 }
