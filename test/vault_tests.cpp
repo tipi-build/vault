@@ -38,11 +38,11 @@ BOOST_AUTO_TEST_CASE(simple_use) {
         buffer
     }.get_auths())
   , std::exception );
-  
+
 	tipi::vault vault_reloaded{the_black_keys, buffer};
   BOOST_REQUIRE(vault_reloaded.get_auths().size() == 2);
-  BOOST_REQUIRE((vault_reloaded.get_auths() == 
-      tipi::auths_t{ 
+  BOOST_REQUIRE((vault_reloaded.get_auths() ==
+      tipi::auths_t{
         tipi::auth_t {"john", "cool", "https://mygithub.mycompany.org"},
 	      tipi::auth_t {"dam", "topito", "https://github.com"}
       })

@@ -2,9 +2,9 @@
     "boostorg/boost" : {
         "@" : "boost-1.80.0"
       , "u" : true
-      , "opts" : "set(BOOST_INCLUDE_LIBRARIES fusion;type_index;algorithm;test;xpressive CACHE STRING \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES context CACHE STRING \"\" FORCE)"
-      , "packages" : ["boost_fusion", "boost_core","boost_serialization"]
-      , "targets" : ["Boost::fusion", "Boost::core", "Boost::serialization"]
+      , "opts" : "set(BOOST_INCLUDE_LIBRARIES system;fusion;type_index;algorithm;test;xpressive;serialization CACHE STRING \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES context CACHE STRING \"\" FORCE) \n add_compile_options(-Wno-enum-constexpr-conversion)"
+      , "packages" : ["boost_system","boost_fusion", "boost_core"]
+      , "targets" : ["Boost::system","Boost::fusion", "Boost::core"]
     },
     "cpp-pre/json": {
         "@": "feature/move-to-native-tipi-deps",
@@ -13,10 +13,10 @@
             , "boostorg/boost" : {
                 "@" : "boost-1.80.0"
               , "u" : true
-              , "opts" : "set(BOOST_INCLUDE_LIBRARIES fusion;type_index;algorithm;test;xpressive CACHE STRING \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES context CACHE STRING \"\" FORCE)"
-              , "packages" : ["boost_fusion", "boost_core","boost_serialization"]
-              , "targets" : ["Boost::fusion", "Boost::core", "Boost::serialization"]
-            }
+              , "opts" : "set(BOOST_INCLUDE_LIBRARIES system;fusion;type_index;algorithm;test;xpressive;serialization CACHE STRING \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES context CACHE STRING \"\" FORCE) \n add_compile_options(-Wno-enum-constexpr-conversion)"
+              , "packages" : ["boost_system","boost_fusion", "boost_core"]
+              , "targets" : ["Boost::system","Boost::fusion", "Boost::core"]
+              }
           },
         "u": false
     },
@@ -31,4 +31,6 @@
         ],
         "u": true
     }
+    , "platform:wasm-cxx17" : ["target::embind"]
+    , "platform:wasm-asmjs-cxx17" : ["target::embind"]
 }
