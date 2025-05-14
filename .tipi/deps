@@ -4,7 +4,7 @@
     "requires": {
       "boostorg/boost": {
         "@": "boost-1.80.0",
-        "opts.wasm-asmjs-cxx17": "set(BOOST_INCLUDE_LIBRARIES \"system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
+        "opts": "set(BOOST_INCLUDE_LIBRARIES \"system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
         "packages": [
           "boost_system",
           "boost_filesystem",
@@ -29,7 +29,8 @@
       }
     },
     "x": [
-      "test"
+      "test",
+      "examples"
     ],
     "u": false
   }, 
@@ -46,7 +47,7 @@
   }, 
   "boostorg/boost": {
     "@": "boost-1.80.0",
-    "opts.wasm-asmjs-cxx17": "set(BOOST_INCLUDE_LIBRARIES \"system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
+    "opts": "set(BOOST_INCLUDE_LIBRARIES \"system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
 
     "packages": [
       "boost_system",
