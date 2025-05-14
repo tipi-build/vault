@@ -14,7 +14,8 @@ namespace tipi {
 
   enum class endpoint_t {
     GITHUB,
-    TIPI_STORAGE
+    TIPI_STORAGE,
+    CLUSTER
   };
 
   struct auth_t {
