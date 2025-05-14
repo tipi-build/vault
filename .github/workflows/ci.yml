@@ -3,22 +3,21 @@ name: build
 on: [push]
 
 jobs:
-  build-wasm:
-    name: build-wasm
+  build-wasm-asmjs:
+    name: build-wasm-asmjs
     runs-on: ubuntu-latest
-    container: tipibuild/tipi-ubuntu-develop
+    container: tipibuild/tipi-ubuntu:latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: tipi builds project
         run: |
-          tipi . --dont-upgrade --verbose -t wasm-asmjs-cxx17 --test all
+          tipi . --dont-upgrade --verbose -t wasm-asmjs-cxx17  -G "Unix Makefiles" --test all
 
   build-linux:
     name: build-linux
     runs-on: ubuntu-latest
-    container: tipibuild/tipi-ubuntu-develop
-
+    container: tipibuild/tipi-ubuntu:latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
