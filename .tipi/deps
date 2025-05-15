@@ -4,7 +4,7 @@
     "requires": {
       "boostorg/boost": {
         "@": "boost-1.80.0",
-        "opts": "set(BOOST_INCLUDE_LIBRARIES \"system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
+        "opts": "set(BOOST_INCLUDE_LIBRARIES \"xpressive;system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
         "packages": [
           "boost_system",
           "boost_filesystem",
@@ -47,7 +47,7 @@
   }, 
   "boostorg/boost": {
     "@": "boost-1.80.0",
-    "opts": "set(BOOST_INCLUDE_LIBRARIES \"system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
+    "opts": "set(BOOST_INCLUDE_LIBRARIES \"xpressive;system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
 
     "packages": [
       "boost_system",
@@ -60,6 +60,37 @@
         "Boost::uuid"
     ],
     "u": true
+  },
+  "nxxm/xxhr": {
+    "@": ":faa17ac3547ad194d916ea69ac3fd479202629da",
+    "requires": {
+      "aantron/better-enums": {
+          "@": "0.11.1",
+          "u": false,
+          "x" : ["/example", "/script", "/doc", "/test"]
+      },
+      "boostorg/boost": {
+          "@": "boost-1.80.0",
+          "opts": "set(BOOST_INCLUDE_LIBRARIES \"xpressive;system;fusion;uuid;filesystem;serialization;test\" CACHE STRING \"\" FORCE)\n set (BUILD_TESTING ON CACHE BOOL \"\" FORCE)\nset(BOOST_EXCLUDE_LIBRARIES \"context;log;log_setup;asio;fiber_numa;fiber;coroutine\" CACHE STRING \"\" FORCE)\n set (CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument\")",
+          "packages": [
+              "boost_system",
+              "boost_filesystem",
+              "boost_uuid"
+          ],
+          "targets": [
+              "Boost::system",
+              "Boost::filesystem",
+              "Boost::uuid"
+          ],
+          "u": true
+      }
+    },
+    "x": [
+      "test",
+      "examples"
+    ],
+    "u": false
   }
+  
 
 }

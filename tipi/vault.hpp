@@ -4,10 +4,8 @@
 #include <map>
 #include <pre/json/from_json.hpp>
 #include <pre/json/to_json.hpp>
+#include <xxhr/util.hpp> // for base64
 #include <boost/fusion/include/equal_to.hpp>
-#include <boost/archive/iterators/binary_from_base64.hpp>
-#include <boost/archive/iterators/base64_from_binary.hpp>
-#include <boost/archive/iterators/transform_width.hpp>
 
 
 #include <tipi/detail/encryption.hpp>
@@ -34,22 +32,6 @@ namespace tipi {
 BOOST_FUSION_ADAPT_STRUCT(tipi::auth_t, user, pass, endpoint, type);
 
 namespace tipi {
-
-  inline std::string decode64(const std::string &val) {
-    using namespace boost::archive::iterators;
-    using It = transform_width<binary_from_base64<std::string::const_iterator>, 8, 6>;
-    // See https://svn.boost.org/trac10/ticket/5629#comment:9
-    // Boost binary_from_base64 transforms '=' into '\0', they need to be removed to support binary data
-    auto padding_count = std::count(val.end() - std::min(std::size_t{2}, val.size()), val.end() , '=');
-    return std::string(It(std::begin(val)), It(std::end(val) - padding_count));
-  }
-
-  inline std::string encode64(const std::string &val) {
-    using namespace boost::archive::iterators;
-    using It = base64_from_binary<transform_width<std::string::const_iterator, 6, 8>>;
-    auto tmp = std::string(It(std::begin(val)), It(std::end(val)));
-    return tmp.append((3 - val.size() % 3) % 3, '=');
-  }
 
   /**
    * \brief This represents a passphrase  encrypted random generated access_key for the vault
@@ -78,7 +60,7 @@ namespace tipi {
       std::mt19937 prng(seed);
       std::string access_key(ACCESS_KEY_SIZE, char{});
       std::generate(access_key.begin(), access_key.end() - 1, prng);
-      auto random_key = encode64(access_key);
+      auto random_key = xxhr::util::encode64(access_key);
       set_raw_key(random_key);
     }
 
