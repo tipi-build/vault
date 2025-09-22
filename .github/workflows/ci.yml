@@ -6,7 +6,7 @@ jobs:
   build-wasm-asmjs:
     name: build-wasm-asmjs
     runs-on: ubuntu-latest
-    container: tipibuild/tipi-ubuntu:latest
+    container: tipibuild/tipi-ubuntu:v0.0.72
     steps:
       - name: checkout
         uses: actions/checkout@v2
