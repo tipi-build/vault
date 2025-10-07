@@ -1,0 +1,4 @@
+set(BOOST_INCLUDE_LIBRARIES "xpressive;system;fusion;uuid;filesystem;serialization;test" CACHE STRING "" FORCE)
+set (BUILD_TESTING ON CACHE BOOL "" FORCE)
+set(BOOST_EXCLUDE_LIBRARIES "context;log;log_setup;asio;fiber_numa;fiber;coroutine" CACHE STRING "" FORCE)
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -fms-extensions -fdeclspec -pthread -Wno-enum-constexpr-conversion -Wno-unused-command-line-argument")
